@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -44,7 +45,7 @@ const TestimonialsSection = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-    }, 5000);
+    }, 6000);
     return () => clearInterval(interval);
   }, []);
 
@@ -57,91 +58,158 @@ const TestimonialsSection = () => {
   };
 
   return (
-    <section className="py-20 bg-gradient-to-br from-blue-900 to-blue-800 relative overflow-hidden">
-      <div className="absolute inset-0 opacity-20" style={{
-        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-      }}></div>
+    <section className="py-24 bg-gradient-to-br from-[#0A2342] via-[#0D2951] to-[#14B8A6] relative overflow-hidden">
+      {/* Animated background elements */}
+      <motion.div
+        className="absolute top-10 left-10 w-32 h-32 bg-[#FFB703]/20 rounded-full"
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.3, 0.6, 0.3],
+        }}
+        transition={{
+          duration: 4,
+          repeat: Infinity,
+        }}
+      />
+      
+      <motion.div
+        className="absolute bottom-10 right-10 w-24 h-24 bg-white/10 rounded-full"
+        animate={{
+          y: [0, -20, 0],
+          rotate: [0, 180, 360],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+        }}
+      />
       
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
-            Success Stories from Around the <span className="text-yellow-400">World</span>
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6">
+            Success Stories from Around the <span className="text-[#FFB703]">World</span>
           </h2>
-          <p className="text-xl text-blue-100 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-200 max-w-3xl mx-auto">
             Real people, real results. Discover how Knowledge Exchange has transformed lives globally.
           </p>
-        </div>
+        </motion.div>
 
         <div className="relative">
-          <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 md:p-12 border border-white/20">
-            <div className="flex flex-col md:flex-row items-center space-y-6 md:space-y-0 md:space-x-8">
-              {/* Avatar */}
-              <div className="flex-shrink-0">
-                <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-yellow-400">
-                  <img 
-                    src={testimonials[currentIndex].image}
-                    alt={testimonials[currentIndex].name}
-                    className="w-full h-full object-cover"
-                  />
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentIndex}
+              className="glass-morphism rounded-3xl p-8 md:p-12 border border-white/20 shadow-2xl"
+              initial={{ opacity: 0, x: 100 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -100 }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+            >
+              <div className="flex flex-col md:flex-row items-center space-y-6 md:space-y-0 md:space-x-8">
+                {/* Avatar */}
+                <motion.div
+                  className="flex-shrink-0"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <div className="w-28 h-28 md:w-36 md:h-36 rounded-full overflow-hidden border-4 border-[#FFB703] shadow-xl">
+                    <img 
+                      src={testimonials[currentIndex].image}
+                      alt={testimonials[currentIndex].name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </motion.div>
+
+                {/* Content */}
+                <div className="text-center md:text-left flex-1">
+                  {/* Stars */}
+                  <motion.div
+                    className="flex justify-center md:justify-start mb-4"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                  >
+                    {[...Array(testimonials[currentIndex].rating)].map((_, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ delay: 0.5 + i * 0.1 }}
+                      >
+                        <Star className="w-5 h-5 text-[#FFB703] fill-current" />
+                      </motion.div>
+                    ))}
+                  </motion.div>
+
+                  {/* Quote */}
+                  <motion.blockquote
+                    className="text-lg md:text-xl text-white mb-6 leading-relaxed italic"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                  >
+                    "{testimonials[currentIndex].content}"
+                  </motion.blockquote>
+
+                  {/* Attribution */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 }}
+                  >
+                    <h4 className="text-xl font-bold text-white">{testimonials[currentIndex].name}</h4>
+                    <p className="text-gray-300">{testimonials[currentIndex].role}</p>
+                    <p className="text-[#FFB703] text-sm font-medium">{testimonials[currentIndex].country}</p>
+                  </motion.div>
                 </div>
               </div>
-
-              {/* Content */}
-              <div className="text-center md:text-left flex-1">
-                {/* Stars */}
-                <div className="flex justify-center md:justify-start mb-4">
-                  {[...Array(testimonials[currentIndex].rating)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                  ))}
-                </div>
-
-                {/* Quote */}
-                <blockquote className="text-lg md:text-xl text-white mb-6 leading-relaxed italic">
-                  "{testimonials[currentIndex].content}"
-                </blockquote>
-
-                {/* Attribution */}
-                <div>
-                  <h4 className="text-xl font-bold text-white">{testimonials[currentIndex].name}</h4>
-                  <p className="text-blue-200">{testimonials[currentIndex].role}</p>
-                  <p className="text-yellow-400 text-sm">{testimonials[currentIndex].country}</p>
-                </div>
-              </div>
-            </div>
-          </div>
+            </motion.div>
+          </AnimatePresence>
 
           {/* Navigation */}
           <div className="flex justify-center items-center mt-8 space-x-4">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={prevTestimonial}
-              className="border-white/30 text-white hover:bg-white hover:text-blue-900 rounded-full w-12 h-12 p-0"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </Button>
+            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={prevTestimonial}
+                className="border-white/30 text-white hover:bg-white hover:text-[#0A2342] rounded-full w-12 h-12 p-0 transition-all duration-300"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </Button>
+            </motion.div>
 
             {/* Dots */}
             <div className="flex space-x-2">
               {testimonials.map((_, index) => (
-                <button
+                <motion.button
                   key={index}
                   onClick={() => setCurrentIndex(index)}
                   className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                    index === currentIndex ? 'bg-yellow-400 scale-110' : 'bg-white/30 hover:bg-white/50'
+                    index === currentIndex ? 'bg-[#FFB703] scale-110' : 'bg-white/30 hover:bg-white/50'
                   }`}
+                  whileHover={{ scale: 1.2 }}
+                  whileTap={{ scale: 0.8 }}
                 />
               ))}
             </div>
 
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={nextTestimonial}
-              className="border-white/30 text-white hover:bg-white hover:text-blue-900 rounded-full w-12 h-12 p-0"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </Button>
+            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={nextTestimonial}
+                className="border-white/30 text-white hover:bg-white hover:text-[#0A2342] rounded-full w-12 h-12 p-0 transition-all duration-300"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </Button>
+            </motion.div>
           </div>
         </div>
       </div>
